@@ -13,9 +13,8 @@
 #include "lib/contracts.h"
 
 #include "lib/uba.h"
-#include "lib/stb_image.c"
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "lib/stb_image.h"
 #include "lib/stb_image_write.h"
 
 typedef uint32_t pixel;

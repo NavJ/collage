@@ -1,4 +1,4 @@
-#include "image_util.c"
+#include "image_util.h"
 
 // TODO: make a better unified command line interface for this
 int main (int argc, char *argv[]) {
