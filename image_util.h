@@ -9,9 +9,10 @@
 #include <string.h>
 #include <math.h>
 
-#include "lib/uba.h"
 #include "lib/xalloc.h"
 #include "lib/contracts.h"
+
+#include "lib/uba.h"
 #include "lib/stb_image.c"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
