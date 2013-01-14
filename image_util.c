@@ -529,7 +529,9 @@ img *make_collage(img *source,
       sources_img[src_pix] = best_i_std;
       image_free(best_i);
     }
-    I[best_img_index] = NULL;
+    // Remove these next lines to allow duplicate images in the collage
+    if (I[best_img_index]->avg != NULL) free(I[best_img_index]->avg);
+    I[best_img_index]->avg = NULL;
   }
   
   // stitch back together the sorted version

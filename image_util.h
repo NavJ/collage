@@ -66,6 +66,7 @@ img_data **parse_folder(const char *dirname,
 			unsigned int *loaded,
                         unsigned int min_w,
 			unsigned int min_h);
+// NOTE: make_collage is DESTRUCTIVE to I. Planning to fix at a later date.
 img *make_collage(img *source,
 		  img_data *I[],
 		  unsigned int I_len,
