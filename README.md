@@ -3,6 +3,8 @@ Auto Collage
 
 This is a small project written over winter break 2012-2013.
 
+Here's an album of some collages made with this program: http://imgur.com/a/pD4HJ
+
 
 Compilation
 -----------
