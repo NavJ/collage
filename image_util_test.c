@@ -4,14 +4,6 @@
 int main (int argc, char *argv[]) {
   if (argc <= 2) exit(EXIT_FAILURE);
 
-  if (strcmp(argv[1], "half") == 0) {
-    char *file = argv[2];
-    img *I = image_load(file, 0, 0);
-
-    image_save(shrink(I, I->w/2, I->h/2), strcat(file, ".png"));
-    return 0;
-  }
-  
   char *src_file = argv[1];
   char *src_foldr = argv[2];
 
@@ -31,7 +23,9 @@ int main (int argc, char *argv[]) {
   img_data **img_foldr = parse_folder(src_foldr, &load, 30, 30);
   printf("%d images loaded successfully!\n", load);
   assert(load != 0);
-  printf("Fitting images from %s to %s...\n", src_foldr, src_file);
+
+  printf("Fitting images from %s to %s...\n",
+         src_foldr, src_file);  
   img *collaged = make_collage(I_std, img_foldr, load, 30);
 
   unsigned int src_name_len = strlen(src_file);
@@ -43,12 +37,15 @@ int main (int argc, char *argv[]) {
   image_save(collaged, save_file);
   printf("Completed! Image saved to \"%s\".\n", save_file);
   free(save_file);
-  free(I_std);
+  image_free(I_std);
   image_free(collaged);
   for (unsigned int i = 0; i < load; i++) {
     if (img_foldr[i] != NULL) {
       if (img_foldr[i]->avg != NULL) {
         free(img_foldr[i]->avg);
+      }
+      if (img_foldr[i]->filename != NULL) {
+        free(img_foldr[i]->filename);
       }
       free(img_foldr[i]);
     }
