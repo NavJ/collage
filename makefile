@@ -1,6 +1,6 @@
 CC=gcc
 CCFLAGS=-g -Wall -Wextra -std=c99 -pedantic -lm
-OPTFLAGS=-Wall -Wextra -std=c99 -pedantic -lm -O3
+OPTFLAGS=-std=c99 -pedantic -lm -O3
 DEBUGFLAGS=-DDEBUG
 GPFLAGS=-pg
 ALLDEPS=$(wildcard lib/*.h) $(wildcard lib/*.c) $(wildcard *.h) $(wildcard *.c)
