@@ -486,6 +486,7 @@ int get_distance(pixel p1, pixel p2) {
   return (r_dist * r_dist + g_dist * g_dist + b_dist * b_dist);
 }
 
+// TODO: allow limited reusing based on a tolerance!
 img *make_collage(img *source,
 		  img_data *I[],
 		  unsigned int I_len,
@@ -534,6 +535,61 @@ img *make_collage(img *source,
     I[best_img_index]->avg = NULL;
   }
   
+  // stitch back together the sorted version
+  img *stitched = stitch(sources_img, source_std->w, source_std->h);
+  for (unsigned int i = 0; i < source_std->w * source_std->h; i++)
+    image_free(sources_img[i]);
+  free(sources_img);
+  ASSERT(is_img(stitched));
+  return stitched;
+}
+
+img *make_collage_kdtree(img *source,
+                         img_data *I[],
+                         unsigned int I_len,
+                         unsigned int std) {  
+  REQUIRES(is_img(source) && I_len >= source->w * source->h);
+  // resize source image as necessary
+  // (pretend it's been standardized before coming here)
+  img *source_std = source;
+
+  img **sources_img = xmalloc(source_std->h * source_std->w * sizeof(img *));
+
+  struct kdtree *K = kd_create(3);
+  // populate the tree
+  for (unsigned int i = 0; i < I_len; i++) {
+    img_data *imgd = I[i];
+    pixel *p = imgd->avg;
+    if (p != NULL) {
+      kd_insert3f(K,
+                  (float) get_red(*p),
+                  (float) get_green(*p),
+                  (float) get_blue(*p),
+                  (void *) imgd);
+    } 
+  }
+  //printf("Tree populated!\n");
+  for (unsigned int src_pix = 0;
+       src_pix < source_std->w * source_std->h;
+       src_pix++) {
+    pixel p = source_std->data[src_pix];
+    struct kdres *best_kdres = kd_nearest3f(K,
+                                            (float) get_red(p),
+                                            (float) get_green(p),
+                                            (float) get_blue(p));
+    //printf("Got result for pixel %d\n", src_pix);
+    img_data *best = (img_data *) kd_res_item_data(best_kdres);
+    assert(best != NULL);
+    img *best_i = image_load(best->filename, std, std);
+    img *best_i_std = standardize(best_i, std);
+    sources_img[src_pix] = best_i_std;
+    //printf("Freeing...");
+    kd_res_free(best_kdres);
+    image_free(best_i);
+  }
+  //printf("All lookups completed.\n");
+  kd_free(K);
+
   // stitch back together the sorted version
   img *stitched = stitch(sources_img, source_std->w, source_std->h);
   for (unsigned int i = 0; i < source_std->w * source_std->h; i++)

@@ -13,6 +13,7 @@
 #include "lib/contracts.h"
 
 #include "lib/uba.h"
+#include "lib/kdtree.h"
 
 #include "lib/stb_image.h"
 #include "lib/stb_image_write.h"
@@ -71,5 +72,8 @@ img *make_collage(img *source,
 		  img_data *I[],
 		  unsigned int I_len,
 		  unsigned int std);
-
+img *make_collage_kdtree(img *source,
+                         img_data *I[],
+                         unsigned int I_len,
+                         unsigned int std);
 #endif
